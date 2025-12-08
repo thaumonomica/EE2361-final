@@ -256,7 +256,7 @@ void reset(){
 }
 
 void updateMatrix(int startrow, int FOV) {
-    for (int i = startrow; i< startrow + FOV; i++){
+    for (int i = startrow; i < startrow + FOV; i++){
         
         blast_row_pic24(matrix[i],31);
         
@@ -792,8 +792,16 @@ int main(void) {
                 moveCounter = 0;
             }
             
-            // Shows the area of the maze with the player inside
-            updateMatrix(pacman_y-2, 5);
+            if (pacman_y < 2) {
+                // Handles when player is in the top two rows
+                updateMatrix(0, 5);
+            } else if (pacman_y > 13) {
+                // Handles when player is in the bottom two rows
+                updateMatrix(11, 5);
+            } else {
+                // Shows the area of the maze with the player inside
+                updateMatrix(pacman_y-2, 5);
+            }
         }
         
         // Determines which end screen to display
