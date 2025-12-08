@@ -494,7 +494,7 @@ void setWinScreen(void) {
             black,
             white, // letter I
             black,
-            white,black,white,white,white // letter N
+            white,black,white,white,white, // letter N
             black};
  
     int endRow9[32] = {black,
