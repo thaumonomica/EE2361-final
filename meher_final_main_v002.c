@@ -48,7 +48,7 @@
 #define white 0x07
 
 int row0[32] = {blue,black,yellow,black,black,black,black,black,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,purple,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
                 black,black,black,black,black,yellow,yellow,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow};
 
@@ -83,7 +83,7 @@ int row6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
                 black,black,black,black,black,black,yellow,yellow};
 
 int row7[32] = {black,black,black,black,black,black,yellow,yellow,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,green,
                 black,black,black,black,black,yellow,yellow,black,
                 yellow,yellow,black,black,yellow,yellow,black,black};
 
@@ -127,7 +127,11 @@ int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow,
                 yellow,yellow,yellow,yellow,yellow,yellow,black,red};
 
+<<<<<<< HEAD
 int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
+=======
+int* matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
+>>>>>>> 9dd8eca0d3f86104107801ef54e6581840dde3df
 
 // Game state
 int pacman_x = 5;
