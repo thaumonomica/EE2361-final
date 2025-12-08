@@ -468,6 +468,132 @@ void setEndScreen(void) {
     }
 }
 
+void setStartScreen() {
+    int startRow2[32] = {black,
+            white,white,white,white,white, // letter S
+            black,
+            white,white,white,white,white, // letter T
+            black,
+            black,black,white,black,black, // letter A
+            black,
+            white,white,white,white,black, // letter R
+            black,
+            white,white,white,white,white, // letter T
+            black};
+    
+    int startRow3[32] = {black,
+            white,black,black,black,black, // letter S
+            black,
+            black,black,white,black,black, // letter T
+            black,
+            black,white,black,white,black, // letter A
+            black,
+            white,black,black,black,white, // letter R
+            black,
+            black,black,white,black,black, // letter T
+            black};
+    
+    int startRow4[32] = {black,
+            white,white,white,white,white, // letter S
+            black,
+            black,black,white,black,black, // letter T
+            black,
+            black,white,white,white,black, // letter A
+            black,
+            white,white,white,white,black, // letter R
+            black,
+            black,black,white,black,black, // letter T
+            black};
+    
+    int startRow5[32] = {black,
+            black,black,black,black,white, // letter S
+            black,
+            black,black,white,black,black, // letter T
+            black,
+            white,black,black,black,white, // letter A
+            black,
+            white,black,black,black,white, // letter R
+            black,
+            black,black,white,black,black, // letter T
+            black};
+ 
+    int startRow6[32] = {black,
+            white,white,white,white,white, // letter S
+            black,
+            black,black,white,black,black, // letter T
+            black,
+            white,black,black,black,white, // letter A
+            black,
+            white,black,black,black,white, // letter R
+            black,
+            black,black,white,black,black, // letter T
+            black};
+ 
+    
+    int startRow7[32] = {black,black,black,black,
+            white,white,white,white,white, // letter G
+            black,
+            black,black,white,black,black, // letter A
+            black,
+            white,black,black,black,white, // letter M
+            black,
+            white,white,white,white,white, // letter E
+            black,black,black,black};
+    
+    int startRow8[32] = {black,black,black,black,
+            white,black,black,black,black, // letter G
+            black,
+            black,white,black,white,black, // letter A
+            black,
+            white,white,black,white,white, // letter M
+            black,
+            white,black,black,black,black, // letter E
+            black,black,black,black};
+    
+    int startRow9[32] = {black,black,black,black,
+            white,black,white,white,white, // letter G
+            black,
+            black,white,white,white,black, // letter A
+            black,
+            white,black,white,black,white, // letter M
+            black,
+            white,white,white,black,black, // letter E
+            black,black,black,black};
+    
+    int startRow10[32] = {black,black,black,black,
+            white,black,black,black,white, // letter G
+            black,
+            white,black,black,black,white, // letter A
+            black,
+            white,black,black,black,white, // letter M
+            black,
+            white,black,black,black,black, // letter E
+            black,black,black,black};
+    
+    int startRow11[32] = {black,black,black,black,
+            white,white,white,white,white, // letter G
+            black,
+            white,black,black,black,white, // letter A
+            black,
+            white,black,black,black,white, // letter M
+            black,
+            white,white,white,white,white, // letter E
+            black,black,black,black};
+    
+    for (int i = 0; i < 32; i++) {
+        matrix[2][i] = startRow2[i];
+        matrix[3][i] = startRow3[i];
+        matrix[4][i] = startRow4[i];
+        matrix[5][i] = startRow5[i];
+        matrix[6][i] = startRow6[i];
+        
+        matrix[7][i] = startRow7[i];
+        matrix[8][i] = startRow8[i];
+        matrix[9][i] = startRow9[i];
+        matrix[10][i] = startRow10[i];
+        matrix[11][i] = startRow11[i];
+    }
+}
 
 int main(void) {
     setup();
