@@ -432,32 +432,76 @@ int gameLosscheck(){
     
 }
 
-void setEndScreen(void) {
-    int endRow5[32] = {black,white,black,black,black,white,black,white,
-            white,white,white,black,white,black,black,white,
-            black,white,black,black,black,black,white,black,
-            white,black,white,white,black,black,white,black};
+void setWinScreen(void) {
+    int endRow5[32] = {black,
+            white,black,black,black,white, // letter Y
+            black,
+            white,white,white,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            white,black,black,black,black,white, // letter W
+            black,
+            white, // letter I
+            black,
+            white,black,black,black,white, // letter N
+            black};
  
+    int endRow6[32] = {black,
+            black,white,black,white,black, // letter Y
+            black,
+            white,black,black,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            white,black,black,black,black,white, // letter W
+            black,
+            white, // letter I
+            black,
+            white,white,black,black,white, // letter N
+            black};
  
-    int endRow6[32] = {black,black,white,black,white,black,black,white,
-            black,black,white,black,white,black,black,white,
-            black,white,black,black,black,black,white,black,
-            white,black,white,white,black,black,white,black};
+    int endRow7[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,black,black,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            white,black,white,white,black,white, // letter W
+            black,
+            white, // letter I
+            black,
+            white,white,white,black,white, // letter N
+            black};
  
-    int endRow7[32] = {black,black,black,white,black,black,black,white,
-            black,black,white,black,white,black,black,white,
-            black,white,black,white,white,black,white,black,
-            white,black,white,white,white,black,white,black};
+    int endRow8[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,black,black,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            black,white,black,black,white,black, // letter W
+            black,
+            white, // letter I
+            black,
+            white,black,white,white,white // letter N
+            black};
  
-    int endRow8[32] = {black,black,black,white,black,black,black,white,
-            black,black,white,black,white,black,black,white,
-            black,black,white,black,black,white,black,black,
-            white,black,white,black,white,white,white,black};
- 
-    int endRow9[32] = {black,black,black,white,black,black,black,white,
-            white,white,white,black,white,white,white,white,
-            black,black,white,black,black,white,black,black,
-            white,black,white,black,black,white,white,black};
+    int endRow9[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,white,white,white, // letter O
+            black,
+            white,white,white,white, // letter U
+            black,
+            black,white,black,black,white,black, // letter W
+            black,
+            white, // letter I
+            black,
+            white,black,black,white,white, // letter N
+            black};
     
    for(int i = 0; i < 32; i++) {
         matrix[5][i] = endRow5[i];
