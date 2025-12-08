@@ -46,55 +46,87 @@
 #define black 0x00
 #define white 0x07
 
-int row1[32] = {red,red,red,red,red,red,red,red,red,red,red,red,red,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row2[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row3[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row4[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row5[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row6[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row7[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row8[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row9[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row10[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row11[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row12[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row13[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row14[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row15[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int row16[32] = {red,black,black,black,black,black,black,black,black,black,black,black,black,red,black
-        ,black,black,black,red,red,red,red,red,red,red,red,red,red,red,red,red
-        ,red};
-int matrix[16] = {row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15,row16};
+int row0[32] = {blue,black,yellow,black,black,black,black,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,purple,
+                black,black,black,black,black,yellow,yellow,yellow,
+                yellow,black,black,black,yellow,yellow,yellow,yellow};
+
+int row1[32] = {yellow,black,black,black,yellow,black,yellow,black,
+                black,black,yellow,black,black,black,black,black,
+                yellow,yellow,yellow,yellow,black,black,black,black,
+                black,black,yellow,black,black,black,black,yellow};
+
+int row2[32] = {black,black,yellow,black,yellow,black,black,black,
+                yellow,black,yellow,black,black,yellow,black,yellow,
+                black,black,black,yellow,black,black,yellow,black,
+                black,yellow,yellow,black,yellow,yellow,black,yellow};
+
+int row3[32] = {black,yellow,black,black,black,black,yellow,black,
+                black,black,yellow,black,yellow,black,black,yellow,
+                black,yellow,black,black,yellow,black,yellow,black,
+                yellow,yellow,yellow,black,yellow,yellow,black,yellow};
+
+int row4[32] = {black,black,yellow,black,yellow,black,black,black,
+                yellow,black,black,black,black,black,black,yellow,
+                black,yellow,yellow,black,black,black,yellow,black,
+                black,black,yellow,black,black,black,black,yellow};
+
+int row5[32] = {yellow,black,black,black,yellow,black,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,black,yellow,
+                black,black,black,yellow,black,yellow,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,black,black,yellow};
+
+int row6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
+                black,black,black,black,black,black,black,yellow,
+                yellow,yellow,black,yellow,black,black,black,black,
+                black,black,black,black,black,black,yellow,yellow};
+
+int row7[32] = {black,black,black,black,black,black,yellow,yellow,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
+                black,black,black,black,black,yellow,yellow,black,
+                yellow,yellow,black,black,yellow,yellow,black,black};
+
+int row8[32] = {black,black,yellow,yellow,yellow,black,black,black,
+                black,black,black,yellow,black,black,black,yellow,
+                yellow,black,yellow,yellow,yellow,black,black,black,
+                yellow,black,black,yellow,black,black,black,yellow};
+
+int row9[32] = {yellow,black,yellow,black,black,black,yellow,yellow,
+                black,yellow,yellow,yellow,black,yellow,black,black,
+                black,black,yellow,black,black,black,yellow,black,
+                black,yellow,black,black,black,yellow,black,yellow};
+
+int row10[32] = {yellow,black,black,black,yellow,black,black,black,
+                black,black,black,black,black,yellow,yellow,yellow,
+                yellow,black,yellow,black,yellow,yellow,yellow,yellow,
+                black,black,black,black,black,black,black,yellow};
+
+int row11[32] = {yellow,black,yellow,yellow,yellow,black,yellow,black,
+                yellow,black,black,yellow,black,black,yellow,black,
+                yellow,black,black,black,black,black,black,black,
+                black,yellow,black,yellow,black,yellow,black,yellow};
+
+int row12[32] = {black,black,yellow,black,black,black,black,black,
+                black,yellow,black,yellow,yellow,black,black,black,
+                yellow,yellow,yellow,yellow,black,yellow,black,yellow,
+                black,black,black,black,black,black,black,yellow};
+
+int row13[32] = {black,yellow,yellow,yellow,black,yellow,yellow,black,
+                yellow,black,black,black,yellow,yellow,yellow,black,
+                yellow,black,black,black,black,yellow,black,yellow,
+                black,yellow,black,yellow,black,yellow,black,yellow};
+
+int row14[32] = {black,black,black,black,black,yellow,black,black,
+                black,black,yellow,black,yellow,black,black,black,
+                black,black,yellow,black,black,black,black,black,
+                black,black,black,black,black,black,black,yellow};
+
+int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
+                yellow,black,black,black,black,black,yellow,black,
+                yellow,black,black,black,yellow,yellow,yellow,yellow,
+                yellow,yellow,yellow,yellow,yellow,yellow,black,red};
+
+int matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
 
 void setup(void) {
