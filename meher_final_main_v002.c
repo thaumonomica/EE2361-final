@@ -131,16 +131,15 @@ volatile int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
 volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
 // Game state
-int pacman_x = 5;
-int pacman_y = 5;
-int direction = 0; // 0: right & purple, 1: down & cyan, 2: left & white, 3: up & blue
-int lastButtonState = 1; // 0: pressed, 1: NOT pressed
-int moveCounter = 0;
+volatile int pacman_x = 5;
+volatile int pacman_y = 5;
+volatile int direction = 0; // 0: right & purple, 1: down & cyan, 2: left & white, 3: up & blue
+volatile int lastButtonState = 1; // 0: pressed, 1: NOT pressed
+volatile int moveCounter = 0;
 volatile int buttonDebounce = 0;
 
-int enemy_x = 31;
-int enemy_y = 15;
-int enemy_dircect = 0;
+volatile int enemy_x = 31;
+volatile int enemy_y = 15;
 
 void setup(void) {
     CLKDIVbits.RCDIV = 0; //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -512,7 +511,7 @@ void setWinScreen(void) {
             white,black,black,white,white, // letter N
             black};
     
-   for(int i = 0; i < 32; i++) {
+    for(int i = 0; i < 32; i++) {
         matrix[5][i] = endRow5[i];
         matrix[6][i] = endRow6[i];
         matrix[7][i] = endRow7[i];
@@ -761,17 +760,25 @@ int main(void) {
     drawPacman();
     drawEnemy();
     
-    int gameCont = 1;
-
+    int gameCont = 1; // Check if game continues
+    int playerWin = 1; // Check if player wins
     while(1){
-        while (gameCont){
+        setStartScreen(); // Prepares the start screen
+        lastButtonState = 1;
+        while (lastButtonState) { // If they press the button, start the game
             checkButton();
+            updateMatrix(5, 5); // Display the start screen
+        }
+        
+        while (gameCont){
+            checkButton(); // see if the player pressed the button to rotate
         
             // Move pacman every N iterations
             moveCounter++;
             if (moveCounter >= 10) {
                 if(gameLosscheck() == 0){
                     gameCont = 0;
+                    playerWin = 0;
                 }
                 clearPacman();
                 movePacman();
@@ -779,11 +786,24 @@ int main(void) {
                 moveEnemy();
                 moveCounter = 0;
             }
-
+            
+            // Shows the area of the maze with the player inside
             updateMatrix(pacman_y-2, 5);
         }
-        setEndScreen();
-        updateMatrix(5, 5);
+        
+        // Determines which end screen to display
+        if (playerWin) {
+            setWinScreen();
+        } else {
+            setLoseScreen();
+        }
+        
+        // Displays the end screen until they press the button
+        lastButtonState = 1;
+        while (lastButtonState) {
+            checkButton();
+            updateMatrix(5, 5); // Displays the end screen
+        }
         
         
         
