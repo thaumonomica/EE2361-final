@@ -586,7 +586,7 @@ void setStartScreen() {
         matrix[4][i] = startRow4[i];
         matrix[5][i] = startRow5[i];
         matrix[6][i] = startRow6[i];
-        
+        matrix[7][i] = black;
         matrix[8][i] = startRow8[i];
         matrix[9][i] = startRow9[i];
         matrix[10][i] = startRow10[i];
