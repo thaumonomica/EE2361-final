@@ -126,7 +126,7 @@ int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow,
                 yellow,yellow,yellow,yellow,yellow,yellow,black,red};
 
-int matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
+int* matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
 
 void setup(void) {
