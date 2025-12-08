@@ -421,7 +421,7 @@ void moveEnemy() {
     drawEnemy();
 }
 
-void setStartScreen(void) {
+void setEndScreen(void) {
     row5 = {black,white,black,black,black,white,black,white,
             white,white,white,black,white,black,black,white,
             black,white,black,black,black,black,white,black,
