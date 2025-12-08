@@ -350,7 +350,6 @@ void movePacman() {
         pacman_y = new_y;
         drawPacman();
     } else {
-        direction = 3;
         drawPacman();
     }
 }
