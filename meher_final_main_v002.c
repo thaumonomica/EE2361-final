@@ -1,6 +1,7 @@
 /*
  * File:   meher_lab5_main_v001.c
  * Author: chand
+ 
  *
  * Created on September 4, 2025, 2:38 PM
  */
@@ -376,27 +377,48 @@ void movePacman() {
 void moveEnemy() {
     int new_x = enemy_x;
     int new_y = enemy_y;
-    
-    // Calculate new position
-    if (!(checkWall(new_x+1, new_y))){
-        new_x++;
-    } else if(!(checkWall(new_x-1, new_y))) {
-        new_x--;
-    } else if(!(checkWall(new_x, new_y+1))) {
-        new_y++;
-    } else if(!(checkWall(new_x, new_y-1))) {
-        new_y--;
+
+    int dx = pacman_x - enemy_x;
+    int dy = pacman_y - enemy_y;
+
+    // Prefer moving along the axis where the distance is larger
+    if (abs(dx) >= abs(dy)) {
+        // Try horizontal first
+        if (dx > 0 && !checkWall(enemy_x + 1, enemy_y)) {
+            new_x = enemy_x + 1;
+        } else if (dx < 0 && !checkWall(enemy_x - 1, enemy_y)) {
+            new_x = enemy_x - 1;
+        }
+        // If horizontal blocked, try vertical
+        else if (dy > 0 && !checkWall(enemy_x, enemy_y + 1)) {
+            new_y = enemy_y + 1;
+        } else if (dy < 0 && !checkWall(enemy_x, enemy_y - 1)) {
+            new_y = enemy_y - 1;
+        }
+    } else {
+        // Prefer vertical first
+        if (dy > 0 && !checkWall(enemy_x, enemy_y + 1)) {
+            new_y = enemy_y + 1;
+        } else if (dy < 0 && !checkWall(enemy_x, enemy_y - 1)) {
+            new_y = enemy_y - 1;
+        }
+        // If vertical blocked, try horizontal
+        else if (dx > 0 && !checkWall(enemy_x + 1, enemy_y)) {
+            new_x = enemy_x + 1;
+        } else if (dx < 0 && !checkWall(enemy_x - 1, enemy_y)) {
+            new_x = enemy_x - 1;
+        }
     }
-    
-    // Check if new position is valid (not a wall)
+
+    // Only move if we actually found a valid new tile
     if (!(checkWall(new_x, new_y))) {
         clearEnemy();
         enemy_x = new_x;
         enemy_y = new_y;
-        drawEnemy();
-    } else {
-        drawEnemy();
     }
+
+    // Always draw after resolving position
+    drawEnemy();
 }
 
 
