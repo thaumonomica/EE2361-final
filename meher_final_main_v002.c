@@ -530,7 +530,7 @@ void setStartScreen() {
             black};
  
     
-    int startRow7[32] = {black,black,black,black,
+    int startRow8[32] = {black,black,black,black,
             white,white,white,white,white, // letter G
             black,
             black,black,white,black,black, // letter A
@@ -540,7 +540,7 @@ void setStartScreen() {
             white,white,white,white,white, // letter E
             black,black,black,black};
     
-    int startRow8[32] = {black,black,black,black,
+    int startRow9[32] = {black,black,black,black,
             white,black,black,black,black, // letter G
             black,
             black,white,black,white,black, // letter A
@@ -550,7 +550,7 @@ void setStartScreen() {
             white,black,black,black,black, // letter E
             black,black,black,black};
     
-    int startRow9[32] = {black,black,black,black,
+    int startRow10[32] = {black,black,black,black,
             white,black,white,white,white, // letter G
             black,
             black,white,white,white,black, // letter A
@@ -560,7 +560,7 @@ void setStartScreen() {
             white,white,white,black,black, // letter E
             black,black,black,black};
     
-    int startRow10[32] = {black,black,black,black,
+    int startRow11[32] = {black,black,black,black,
             white,black,black,black,white, // letter G
             black,
             white,black,black,black,white, // letter A
@@ -570,7 +570,7 @@ void setStartScreen() {
             white,black,black,black,black, // letter E
             black,black,black,black};
     
-    int startRow11[32] = {black,black,black,black,
+    int startRow12[32] = {black,black,black,black,
             white,white,white,white,white, // letter G
             black,
             white,black,black,black,white, // letter A
@@ -587,11 +587,11 @@ void setStartScreen() {
         matrix[5][i] = startRow5[i];
         matrix[6][i] = startRow6[i];
         
-        matrix[7][i] = startRow7[i];
         matrix[8][i] = startRow8[i];
         matrix[9][i] = startRow9[i];
         matrix[10][i] = startRow10[i];
         matrix[11][i] = startRow11[i];
+        matrix[12][i] = startRow12[i];
     }
 }
 
