@@ -262,6 +262,7 @@ void reset(){
 
 void updateMatrix(int startrow, int FOV) {
     for (int i = startrow; i< startrow + FOV; i++){
+        
         blast_row_pic24(matrix[i],31);
         
         int state9 = (i & 0x01) == 1;
@@ -421,11 +422,22 @@ void moveEnemy() {
     drawEnemy();
 }
 
+int gameLosscheck(){
+    int temp = enemy_y;
+    if(pacman_x == enemy_x && enemy_y== pacman_y){
+        return 0;
+    } else {
+       return 1; 
+    }
+    
+}
+
 void setEndScreen(void) {
     int endRow5[32] = {black,white,black,black,black,white,black,white,
             white,white,white,black,white,black,black,white,
             black,white,black,black,black,black,white,black,
-            white,black,white,black,black,black,white,black};
+            white,black,white,white,black,black,white,black};
+ 
  
     int endRow6[32] = {black,black,white,black,white,black,black,white,
             black,black,white,black,white,black,black,white,
@@ -447,12 +459,15 @@ void setEndScreen(void) {
             black,black,white,black,black,white,black,black,
             white,black,white,black,black,white,white,black};
     
-    matrix[5] = endRow5;
-    matrix[6] = endRow6;
-    matrix[7] = endRow7;
-    matrix[8] = endRow8;
-    matrix[9] = endRow9;
+   for(int i = 0; i < 32; i++) {
+        matrix[5][i] = endRow5[i];
+        matrix[6][i] = endRow6[i];
+        matrix[7][i] = endRow7[i];
+        matrix[8][i] = endRow8[i];
+        matrix[9][i] = endRow9[i];
+    }
 }
+
 
 int main(void) {
     setup();
@@ -462,22 +477,32 @@ int main(void) {
     
     drawPacman();
     drawEnemy();
+    
+    int gameCont = 1;
 
     while(1){
+        while (gameCont){
+            checkButton();
         
-        checkButton();
-        
-        // Move pacman every N iterations
-        moveCounter++;
-        if (moveCounter >= 10) {
-            clearPacman();
-            movePacman();
-            clearEnemy();
-            moveEnemy();
-            moveCounter = 0;
+            // Move pacman every N iterations
+            moveCounter++;
+            if (moveCounter >= 10) {
+                if(gameLosscheck() == 0){
+                    gameCont = 0;
+                }
+                clearPacman();
+                movePacman();
+                clearEnemy();
+                moveEnemy();
+                moveCounter = 0;
+            }
+
+            updateMatrix(pacman_y-2, 5);
         }
+        setEndScreen();
+        updateMatrix(5, 5);
         
-        updateMatrix(0, 16);
+        
         
 //        delay(1);
 //        reset();
