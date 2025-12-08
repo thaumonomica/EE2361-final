@@ -127,8 +127,6 @@ volatile int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow,
                 yellow,yellow,yellow,yellow,yellow,yellow,black,red};
 
-
-int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
 
@@ -136,8 +134,8 @@ volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,ro
 volatile int pacman_x = 5;
 volatile int pacman_y = 5;
 volatile int direction = 0; // 0 = right & purple player, 1 = down & cyan player, 2 = left and white player, 3 = up & blue player
-int lastButtonState = 1; 
-int moveCounter = 0;
+volatile int lastButtonState = 1; 
+volatile int moveCounter = 0;
 
 void setup(void) {
     CLKDIVbits.RCDIV = 0; //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
