@@ -33,6 +33,7 @@
 #define CLK_LAT  _LATB5  // Clock pin
 #define LAT_LAT  _LATB3  // Latch pin
 #define OE_LAT   _LATB4  // Output Enable pin
+#define BUTTON   _RB2
 
 // Helper to make the code readable
 #define PIN_HIGH 1
@@ -126,8 +127,14 @@ int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow,
                 yellow,yellow,yellow,yellow,yellow,yellow,black,red};
 
-int matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
+int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
+// Game state
+int pacman_x = 5;
+int pacman_y = 5;
+int direction = 0; // 0=right, 1=down, 2=left, 3=up
+int lastButtonState = 1;
+int moveCounter = 0;
 
 void setup(void) {
     CLKDIVbits.RCDIV = 0; //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -273,15 +280,83 @@ void updateMatrix(int startrow, int FOV) {
 }
 
 
+
+//void changeRow(int *pixels)
+
+void checkButton() {
+    int currentButtonState = BUTTON;
+    
+    // Button pressed (active low)
+    if (currentButtonState == 0 && lastButtonState == 1) {
+        direction = (direction + 1) % 4; // Rotate clockwise
+        delay(50000); // Debounce
+    }
+    
+    lastButtonState = currentButtonState;
+}
+
+int checkWall(int x, int y) {
+    if (y < 0 || y >= 16 || x < 0 || x >= 32) return 1;
+    return (matrix[y][x] == red);
+}
+
+void drawPacman() {
+    // Draw pacman as yellow pixel at current position
+    if (pacman_y >= 0 && pacman_y < 16 && pacman_x >= 0 && pacman_x < 32) {
+        matrix[pacman_y][pacman_x] = cyan;
+    }
+}
+
+void clearPacman() {
+    // Clear pacman's old position
+    if (pacman_y >= 0 && pacman_y < 16 && pacman_x >= 0 && pacman_x < 32) {
+        if (matrix[pacman_y][pacman_x] == yellow) {
+            matrix[pacman_y][pacman_x] = black;
+        }
+    }
+}
+
+void movePacman() {
+    int new_x = pacman_x;
+    int new_y = pacman_y;
+    
+    // Calculate new position
+    switch(direction) {
+        case 0: // Right
+            new_x++;
+            break;
+        case 1: // Down
+            new_y++;
+            break;
+        case 2: // Left
+            new_x--;
+            break;
+        case 3: // Up
+            new_y--;
+            break;
+    }
+    
+    // Check if new position is valid (not a wall)
+    if (!checkWall(new_x, new_y)) {
+        clearPacman();
+        pacman_x = new_x;
+        pacman_y = new_y;
+        drawPacman();
+    }
+}
+
+
+
 int main(void) {
     setup();
     reset();
 //    blast_row_pic24(row1,32);
     reset();
     
+    drawPacman();
 
     while(1){
-        updateMatrix(0, 5);
+        updateMatrix(0, 15);
 //        delay(1);
 //        reset();
 //        LATBbits.LATB4 = 1;
