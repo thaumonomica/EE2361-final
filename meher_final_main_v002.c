@@ -439,7 +439,7 @@ void setEndScreen(void) {
  
     int endRow8[32] = {black,black,black,white,black,black,black,white,
             black,black,white,black,white,black,black,white,
-            black,black,white,black,black,white,black,black
+            black,black,white,black,black,white,black,black,
             white,black,white,black,white,white,white,black};
  
     int endRow9[32] = {black,black,black,white,black,black,black,white,
