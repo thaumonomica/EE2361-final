@@ -125,7 +125,7 @@ volatile int row14[32] = {black,black,black,black,black,yellow,black,black,
 volatile int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
                 yellow,black,black,black,black,black,yellow,black,
                 yellow,black,black,black,yellow,yellow,yellow,yellow,
-                yellow,yellow,yellow,yellow,yellow,yellow,black,red};
+                yellow,yellow,yellow,yellow,yellow,yellow,black,black};
 
 volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
@@ -136,6 +136,10 @@ int direction = 0; // 0=right, 1=down, 2=left, 3=up
 int lastButtonState = 1;
 int moveCounter = 0;
 volatile int buttonDebounce = 0;
+
+int enemy_x = 31;
+int enemy_y = 15;
+int enemy_dircect = 0;
 
 void setup(void) {
     CLKDIVbits.RCDIV = 0; //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -314,11 +318,26 @@ void drawPacman() {
     }
 }
 
+void drawEnemy() {
+    if (enemy_y >= 0 && enemy_y < 16 && enemy_x >= 0 && enemy_x < 32) {
+        matrix[enemy_y][enemy_x] = red;
+    }
+}
+
 void clearPacman() {
     // Clear pacman's old position
     if (pacman_y >= 0 && pacman_y < 16 && pacman_x >= 0 && pacman_x < 32) {
         if (matrix[pacman_y][pacman_x] == cyan) {
             matrix[pacman_y][pacman_x] = black;
+        }
+    }
+}
+
+void clearEnemy() {
+        // Clear pacman's old position
+    if (enemy_y >= 0 && enemy_y < 16 && enemy_x >= 0 && enemy_x < 32) {
+        if (matrix[enemy_y][enemy_x] == red) {
+            matrix[enemy_y][enemy_x] = black;
         }
     }
 }
@@ -354,6 +373,32 @@ void movePacman() {
     }
 }
 
+void moveEnemy() {
+    int new_x = enemy_x;
+    int new_y = enemy_y;
+    
+    // Calculate new position
+    if (!(checkWall(new_x+1, new_y))){
+        new_x++;
+    } else if(!(checkWall(new_x-1, new_y))) {
+        new_x--;
+    } else if(!(checkWall(new_x, new_y+1))) {
+        new_y++;
+    } else if(!(checkWall(new_x, new_y-1))) {
+        new_y--;
+    }
+    
+    // Check if new position is valid (not a wall)
+    if (!(checkWall(new_x, new_y))) {
+        clearEnemy();
+        enemy_x = new_x;
+        enemy_y = new_y;
+        drawEnemy();
+    } else {
+        drawEnemy();
+    }
+}
+
 
 
 int main(void) {
@@ -363,6 +408,7 @@ int main(void) {
     reset();
     
     drawPacman();
+    drawEnemy();
 
     while(1){
         
@@ -373,6 +419,8 @@ int main(void) {
         if (moveCounter >= 10) {
             clearPacman();
             movePacman();
+            clearEnemy();
+            moveEnemy();
             moveCounter = 0;
         }
         
