@@ -48,7 +48,7 @@
 #define white 0x07
 
 int row0[32] = {blue,black,yellow,black,black,black,black,black,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,purple,
                 black,black,black,black,black,yellow,yellow,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow};
 
@@ -83,7 +83,7 @@ int row6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
                 black,black,black,black,black,black,yellow,yellow};
 
 int row7[32] = {black,black,black,black,black,black,yellow,yellow,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,green,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
                 black,black,black,black,black,yellow,yellow,black,
                 yellow,yellow,black,black,yellow,yellow,black,black};
 
@@ -127,11 +127,7 @@ int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow,
                 yellow,yellow,yellow,yellow,yellow,yellow,black,red};
 
-<<<<<<< HEAD
 int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
-=======
-int* matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
->>>>>>> 9dd8eca0d3f86104107801ef54e6581840dde3df
 
 // Game state
 int pacman_x = 5;
@@ -301,7 +297,7 @@ void checkButton() {
 
 int checkWall(int x, int y) {
     if (y < 0 || y >= 16 || x < 0 || x >= 32) return 1;
-    return (matrix[y][x] == red);
+    return (matrix[y][x] == yellow);
 }
 
 void drawPacman() {
@@ -314,7 +310,7 @@ void drawPacman() {
 void clearPacman() {
     // Clear pacman's old position
     if (pacman_y >= 0 && pacman_y < 16 && pacman_x >= 0 && pacman_x < 32) {
-        if (matrix[pacman_y][pacman_x] == yellow) {
+        if (matrix[pacman_y][pacman_x] == cyan) {
             matrix[pacman_y][pacman_x] = black;
         }
     }
@@ -360,7 +356,19 @@ int main(void) {
     drawPacman();
 
     while(1){
-        updateMatrix(0, 15);
+        
+        checkButton();
+        
+        // Move pacman every N iterations
+        moveCounter++;
+        if (moveCounter >= 50) {
+            clearPacman();
+            movePacman();
+            moveCounter = 0;
+        }
+        
+        updateMatrix(0, 16);
+        
 //        delay(1);
 //        reset();
 //        LATBbits.LATB4 = 1;
