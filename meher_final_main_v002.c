@@ -47,13 +47,8 @@
 #define black 0x00
 #define white 0x07
 
-<<<<<<< HEAD
-int row0[32] = {blue,black,yellow,black,black,black,black,black,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,purple,
-=======
 volatile int row0[32] = {purple,black,yellow,black,black,black,black,black,
                 yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
->>>>>>> a17c3d84e0b52661c93133d2fae887cd463727be
                 black,black,black,black,black,yellow,yellow,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow};
 
@@ -87,13 +82,8 @@ volatile int row6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
                 yellow,yellow,black,yellow,black,black,black,black,
                 black,black,black,black,black,black,yellow,yellow};
 
-<<<<<<< HEAD
-int row7[32] = {black,black,black,black,black,black,yellow,yellow,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
-=======
 volatile int row7[32] = {black,black,black,black,black,black,yellow,yellow,
                 yellow,yellow,yellow,yellow,yellow,yellow,yellow,green,
->>>>>>> a17c3d84e0b52661c93133d2fae887cd463727be
                 black,black,black,black,black,yellow,yellow,black,
                 yellow,yellow,black,black,yellow,yellow,black,black};
 
@@ -137,20 +127,12 @@ volatile int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow,
                 yellow,yellow,yellow,yellow,yellow,yellow,black,red};
 
-<<<<<<< HEAD
+
 int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
-=======
-<<<<<<< HEAD
 volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
-=======
->>>>>>> 9dd8eca0d3f86104107801ef54e6581840dde3df
->>>>>>> a17c3d84e0b52661c93133d2fae887cd463727be
+
 
 // Game state
-int pacman_x = 5;
-int pacman_y = 5;
-int direction = 0; // 0=right, 1=down, 2=left, 3=up
-int lastButtonState = 1;
 volatile int pacman_x = 5;
 volatile int pacman_y = 5;
 volatile int direction = 0; // 0 = right & purple player, 1 = down & cyan player, 2 = left and white player, 3 = up & blue player
