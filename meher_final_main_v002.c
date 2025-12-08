@@ -7,9 +7,9 @@
  */
 
 
-#include "xc.h"
-#include <math.h>
-#include <stdio.h>
+#include "xc.h" // Standard PIC include
+#include <math.h> // Gets abs() and other math functions
+#include <stdio.h> // Allows for datatypes like uint8_t
 #include "meher_final_asmLib_v001.h"
 #include <stdlib.h> // Required for malloc
 
@@ -133,8 +133,8 @@ volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,ro
 // Game state
 int pacman_x = 5;
 int pacman_y = 5;
-int direction = 0; // 0=right, 1=down, 2=left, 3=up
-int lastButtonState = 1;
+int direction = 0; // 0: right & purple, 1: down & cyan, 2: left & white, 3: up & blue
+int lastButtonState = 1; // 0: pressed, 1: NOT pressed
 int moveCounter = 0;
 volatile int buttonDebounce = 0;
 
@@ -185,8 +185,6 @@ void setcolor(int  r, int  g, int  b){
         LATBbits.LATB8 = 1;
     }
 }
-
-#include <xc.h> // Standard PIC include
 
 // Assumes 'data' is an array where:
 // Bit 0 = Red
@@ -316,7 +314,18 @@ int checkWall(int x, int y) {
 void drawPacman() {
     // Draw pacman as yellow pixel at current position
     if (pacman_y >= 0 && pacman_y < 16 && pacman_x >= 0 && pacman_x < 32) {
-        matrix[pacman_y][pacman_x] = cyan;
+        if (direction == 0) { // moving right makes player purple
+            matrix[pacman_y][pacman_x] = purple;
+        }
+        else if (direction == 1) { // moving down makes player cyan
+            matrix[pacman_y][pacman_x] = cyan;
+        }
+        else if (direction == 2) { // moving left makes player white
+            matrix[pacman_y][pacman_x] = white;
+        }
+        else if (direction == 3) { // moving up makes player blue
+            matrix[pacman_y][pacman_x] = blue;
+        }
     }
 }
 
