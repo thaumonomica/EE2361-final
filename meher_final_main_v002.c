@@ -422,36 +422,36 @@ void moveEnemy() {
 }
 
 void setEndScreen(void) {
-    row5 = {black,white,black,black,black,white,black,white,
+    int endRow5[32] = {black,white,black,black,black,white,black,white,
             white,white,white,black,white,black,black,white,
             black,white,black,black,black,black,white,black,
             white,black,white,black,black,black,white,black};
  
-    row6 = {black,black,white,black,white,black,black,white,
+    int endRow6[32] = {black,black,white,black,white,black,black,white,
             black,black,white,black,white,black,black,white,
             black,white,black,black,black,black,white,black,
             white,black,white,white,black,black,white,black};
  
-    row7 = {black,black,black,white,black,black,black,white,
+    int endRow7[32] = {black,black,black,white,black,black,black,white,
             black,black,white,black,white,black,black,white,
             black,white,black,white,white,black,white,black,
             white,black,white,white,white,black,white,black};
  
-    row8 = {black,black,black,white,black,black,black,white,
+    int endRow8[32] = {black,black,black,white,black,black,black,white,
             black,black,white,black,white,black,black,white,
             black,black,white,black,black,white,black,black
             white,black,white,black,white,white,white,black};
  
-    row9 = {black,black,black,white,black,black,black,white,
+    int endRow9[32] = {black,black,black,white,black,black,black,white,
             white,white,white,black,white,white,white,white,
             black,black,white,black,black,white,black,black,
             white,black,white,black,black,white,white,black};
     
-    matrix[5] = row5;
-    matrix[6] = row6;
-    matrix[7] = row6;
-    matrix[8] = row8;
-    matrix[9] = row9;
+    matrix[5] = endRow5;
+    matrix[6] = endRow6;
+    matrix[7] = endRow7;
+    matrix[8] = endRow8;
+    matrix[9] = endRow9;
 }
 
 int main(void) {
