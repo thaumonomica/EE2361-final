@@ -47,8 +47,8 @@
 #define black 0x00
 #define white 0x07
 
-volatile int row0[32] = {purple,black,yellow,black,black,black,black,black,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
+volatile int row0[32] = {blue,black,yellow,black,black,black,black,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,purple,
                 black,black,black,black,black,yellow,yellow,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow};
 
@@ -83,7 +83,7 @@ volatile int row6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
                 black,black,black,black,black,black,yellow,yellow};
 
 volatile int row7[32] = {black,black,black,black,black,black,yellow,yellow,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,green,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
                 black,black,black,black,black,yellow,yellow,black,
                 yellow,yellow,black,black,yellow,yellow,black,black};
 
@@ -129,13 +129,13 @@ volatile int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
 
 volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
-
 // Game state
-volatile int pacman_x = 5;
-volatile int pacman_y = 5;
-volatile int direction = 0; // 0 = right & purple player, 1 = down & cyan player, 2 = left and white player, 3 = up & blue player
-volatile int lastButtonState = 1; 
-volatile int moveCounter = 0;
+int pacman_x = 5;
+int pacman_y = 5;
+int direction = 0; // 0=right, 1=down, 2=left, 3=up
+int lastButtonState = 1;
+int moveCounter = 0;
+volatile int buttonDebounce = 0;
 
 void setup(void) {
     CLKDIVbits.RCDIV = 0; //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -287,10 +287,15 @@ void updateMatrix(int startrow, int FOV) {
 void checkButton() {
     int currentButtonState = BUTTON;
     
-    // Button pressed (active low)
-    if (currentButtonState == 0 && lastButtonState == 1) {
-        direction = (direction + 1) % 4; // Rotate clockwise
-        delay(50000); // Debounce
+    // Button pressed (active low) with debounce counter
+    if (currentButtonState == 0 && lastButtonState == 1 && buttonDebounce == 0) {
+        direction = (direction + 1) % 4; // Rotate clockwise: right->down->left->up
+        buttonDebounce = 1000; // Set debounce counter
+    }
+    
+    // Decrement debounce counter
+    if (buttonDebounce > 0) {
+        buttonDebounce--;
     }
     
     lastButtonState = currentButtonState;
@@ -298,6 +303,7 @@ void checkButton() {
 
 int checkWall(int x, int y) {
     if (y < 0 || y >= 16 || x < 0 || x >= 32) return 1;
+    int temp = matrix[y][x] == yellow;
     return (matrix[y][x] == yellow);
 }
 
@@ -338,10 +344,13 @@ void movePacman() {
     }
     
     // Check if new position is valid (not a wall)
-    if (!checkWall(new_x, new_y)) {
+    if (!(checkWall(new_x, new_y))) {
         clearPacman();
         pacman_x = new_x;
         pacman_y = new_y;
+        drawPacman();
+    } else {
+        direction = 3;
         drawPacman();
     }
 }
@@ -362,7 +371,7 @@ int main(void) {
         
         // Move pacman every N iterations
         moveCounter++;
-        if (moveCounter >= 50) {
+        if (moveCounter >= 10) {
             clearPacman();
             movePacman();
             moveCounter = 0;
