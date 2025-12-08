@@ -512,6 +512,101 @@ void setWinScreen(void) {
     }
 }
 
+void setLoseScreen(void) {
+    int loseRow5[32] = {black,
+            white,black,black,black,white, // letter Y
+            black,
+            white,white,white, // letter O
+            black,
+            white,black,white, // letter U
+            black,black,
+    
+            white,black,black, // letter L
+            black,
+            white,white,white, // letter O
+            black,
+            white,white,white, // letter S
+            black,
+            white,white,white, // letter E
+            black};
+    
+    int loseRow6[32] = {black,
+            black,white,black,white,black, // letter Y
+            black,
+            white,black,white, // letter O
+            black,
+            white,black,white, // letter U
+            black,black,
+    
+            white,black,black, // letter L
+            black,
+            white,black,white, // letter O
+            black,
+            white,black,black, // letter S
+            black,
+            white,black,black, // letter E
+            black};
+    
+    int loseRow7[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,black,white, // letter O
+            black,
+            white,black,white, // letter U
+            black,black,
+    
+            white,black,black, // letter L
+            black,
+            white,black,white, // letter O
+            black,
+            white,white,white, // letter S
+            black,
+            white,white,black, // letter E
+            black};
+    
+    int loseRow8[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,black,white, // letter O
+            black,
+            white,black,white, // letter U
+            black,black,
+    
+            white,black,black, // letter L
+            black,
+            white,black,white, // letter O
+            black,
+            black,black,white, // letter S
+            black,
+            white,black,black, // letter E
+            black};
+    
+    int loseRow9[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,white,white, // letter O
+            black,
+            white,white,white, // letter U
+            black,black,
+    
+            white,white,white, // letter L
+            black,
+            white,white,white, // letter O
+            black,
+            white,white,white, // letter S
+            black,
+            white,white,white, // letter E
+            black};
+    
+    for(int i = 0; i < 32; i++) {
+        matrix[5][i] = loseRow5[i];
+        matrix[6][i] = loseRow6[i];
+        matrix[7][i] = loseRow7[i];
+        matrix[8][i] = loseRow8[i];
+        matrix[9][i] = loseRow9[i];
+    }
+}
+
 void setStartScreen() {
     int startRow2[32] = {black,
             white,white,white,white,white, // letter S
@@ -573,7 +668,7 @@ void setStartScreen() {
             black,black,white,black,black, // letter T
             black};
  
-    
+    /*
     int startRow8[32] = {black,black,black,black,
             white,white,white,white,white, // letter G
             black,
@@ -623,8 +718,10 @@ void setStartScreen() {
             black,
             white,white,white,white,white, // letter E
             black,black,black,black};
+    */
     
     for (int i = 0; i < 32; i++) {
+        /*
         matrix[2][i] = startRow2[i];
         matrix[3][i] = startRow3[i];
         matrix[4][i] = startRow4[i];
@@ -636,6 +733,13 @@ void setStartScreen() {
         matrix[10][i] = startRow10[i];
         matrix[11][i] = startRow11[i];
         matrix[12][i] = startRow12[i];
+         */
+        
+        matrix[5][i] = startRow2[i];
+        matrix[6][i] = startRow3[i];
+        matrix[7][i] = startRow4[i];
+        matrix[8][i] = startRow5[i];
+        matrix[9][i] = startRow6[i];
     }
 }
 
