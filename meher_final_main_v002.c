@@ -156,12 +156,10 @@ void setup(void) {
     LATBbits.LATB10 = 0; // SDA1 is input
     LATBbits.LATB11 = 0; // SCL1 is input
     LATBbits.LATB12 = 0; // SDA1 is input
-    LATBbits.LATB13 = 0; // SCL1 is input
-//    
+    LATBbits.LATB13 = 0; // SCL1 is input 
 
     // Wait for the I2C module to stabilize
     delay(20);
-//    lcd_init();
 }
 
 void delay(long n) {
@@ -283,10 +281,6 @@ void updateMatrix(int startrow, int FOV) {
     }
 }
 
-
-
-//void changeRow(int *pixels)
-
 void checkButton() {
     int currentButtonState = BUTTON;
     
@@ -344,7 +338,7 @@ void clearPacman() {
 }
 
 void clearEnemy() {
-        // Clear pacman's old position
+    // Clear pacman's old position
     if (enemy_y >= 0 && enemy_y < 16 && enemy_x >= 0 && enemy_x < 32) {
         if (matrix[enemy_y][enemy_x] == red) {
             matrix[enemy_y][enemy_x] = black;
@@ -437,7 +431,6 @@ int gameLosscheck(){
     } else {
        return 1; 
     }
-    
 }
 
 void setWinScreen(void) {
@@ -615,7 +608,7 @@ void setLoseScreen(void) {
     }
 }
 
-void setStartScreen() {
+void setStartScreen(void) {
     int startRow2[32] = {black,
             white,white,white,white,white, // letter S
             black,
@@ -751,6 +744,16 @@ void setStartScreen() {
     }
 }
 
+void resetGameMaze(void) {
+    for(int i = 0; i < 32; i++) {
+        matrix[5][i] = row5[i];
+        matrix[6][i] = row6[i];
+        matrix[7][i] = row7[i];
+        matrix[8][i] = row8[i];
+        matrix[9][i] = row9[i];
+    }
+}
+
 int main(void) {
     setup();
     reset();
@@ -770,6 +773,8 @@ int main(void) {
             updateMatrix(5, 5); // Display the start screen
         }
         
+        resetGameMaze(); // Resets the part of the maze used for a screen
+        gameCont = 1; // Allows for the game to be replayed after a win/loss
         while (gameCont){
             checkButton(); // see if the player pressed the button to rotate
         
@@ -893,5 +898,5 @@ int main(void) {
 //        delay(5000);
 //        reset();
     }
-//    return 0;
+    return 0;
 }
