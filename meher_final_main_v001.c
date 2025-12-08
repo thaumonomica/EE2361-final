@@ -47,7 +47,7 @@
 #define white 0x07
 
 int row0[32] = {blue,black,yellow,black,black,black,black,black,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,purple,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
                 black,black,black,black,black,yellow,yellow,yellow,
                 yellow,black,black,black,yellow,yellow,yellow,yellow};
 
@@ -82,7 +82,7 @@ int row6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
                 black,black,black,black,black,black,yellow,yellow};
 
 int row7[32] = {black,black,black,black,black,black,yellow,yellow,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,green,
                 black,black,black,black,black,yellow,yellow,black,
                 yellow,yellow,black,black,yellow,yellow,black,black};
 
