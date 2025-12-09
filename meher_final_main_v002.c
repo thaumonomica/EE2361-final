@@ -7,9 +7,9 @@
  */
 
 
-#include "xc.h" // Standard PIC include
-#include <math.h> // Gets abs() and other math functions
-#include <stdio.h> // Allows for datatypes like uint8_t
+#include "xc.h"
+#include <math.h>
+#include <stdio.h>
 #include "meher_final_asmLib_v001.h"
 #include <stdlib.h> // Required for malloc
 
@@ -63,7 +63,7 @@ volatile int row2[32] = {black,black,yellow,black,yellow,black,black,black,
                 black,black,black,yellow,black,black,yellow,black,
                 black,yellow,yellow,black,yellow,yellow,black,yellow};
 
-volatile int row3[32] = {black,yellow,black,black,black,black,yellow,black,
+volatile int row3[32] = {yellow,black,black,black,black,black,yellow,black,
                 black,black,yellow,black,yellow,black,black,yellow,
                 black,yellow,black,black,yellow,black,yellow,black,
                 yellow,yellow,yellow,black,yellow,yellow,black,yellow};
@@ -84,7 +84,7 @@ volatile int row6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
                 black,black,black,black,black,black,yellow,yellow};
 
 volatile int row7[32] = {black,black,black,black,black,black,yellow,yellow,
-                yellow,yellow,yellow,yellow,yellow,yellow,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,green,
                 black,black,black,black,black,yellow,yellow,black,
                 yellow,yellow,black,black,yellow,yellow,black,black};
 
@@ -131,15 +131,71 @@ volatile int row15[32] = {yellow,yellow,yellow,yellow,black,black,black,yellow,
 volatile int *matrix[16] = {row0,row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15};
 
 // Game state
-volatile int pacman_x = 5;
-volatile int pacman_y = 5;
+<<<<<<< HEAD
+int pacman_x = 0;
+int pacman_y = 0;
+int direction = 1 ; // 0=right, 1=down, 2=left, 3=up
+int lastButtonState = 1;
+int moveCounter = 0;
+=======
+volatile int pacman_x = 0;
+volatile int pacman_y = 0;
 volatile int direction = 0; // 0: right & purple, 1: down & cyan, 2: left & white, 3: up & blue
 volatile int lastButtonState = 1; // 0: pressed, 1: NOT pressed
 volatile int moveCounter = 0;
+>>>>>>> 87d919e1ae5a870a2f0687ddab2eeece9640d6f0
 volatile int buttonDebounce = 0;
 
-volatile int enemy_x = 31;
-volatile int enemy_y = 15;
+volatile unsigned long lastCaptureTime = 0;
+volatile unsigned long captureTime = 0;
+volatile unsigned int debouncePeriod = 17000;
+volatile unsigned int count = 0;
+
+int enemy_x = 31;
+int enemy_y = 15;
+int enemy_dircect = 0;
+
+volatile int gameCont = 0;
+volatile int winLoss  = 0;
+volatile int gameStart = 0;
+
+void initPushButton(void) {
+    // 1. Digital Mode Configuration
+    // Ensure RB2 is digital. (AD1PCFG logic depends on your specific PIC24)
+    // Assuming 1 = Digital. Check if RB2 (AN2) needs bit 2 set.
+    AD1PCFG = 0xFFFF; // SAFEST: Set ALL pins to digital to avoid analog issues
+
+    // 2. Configure Pin Direction for RB2
+    TRISBbits.TRISB2 = 1;    // Set RB2 as Input
+
+    // 3. Peripheral Pin Select (PPS) - The Critical Step!
+    // Connect Input Capture 1 (IC1) to Pin RP2 (which is usually RB2)
+    // Note: You must unlock registers if OSCCON lock is active (omitted for simplicity)
+    __builtin_write_OSCCONL(OSCCON & 0xbf); // Unlock PPS
+    RPINR7bits.IC1R = 2;     // Map IC1 to RP2 (Pin RB2)
+    __builtin_write_OSCCONL(OSCCON | 0x40); // Lock PPS
+
+    // 4. Configure Pull-Up Resistor for RB2
+    // On many PIC24s, RB2 corresponds to Change Notification pin CN6.
+    // Check your specific datasheet! (e.g., PIC24FJ64GA002)
+    CNPU1bits.CN6PUE = 1;    // Enable pull-up on RB2 (CN6)
+
+    // 5. Timer 2 Setup (Unchanged)
+    T2CON = 0;
+    T2CONbits.TCKPS = 0b11;  // Prescaler 1:256
+    TMR2 = 0;
+    PR2 = 62500-1;
+    _T2IF = 0;
+    _T2IP = 3;
+    _T2IE = 1;
+    T2CON = 0x8000;          // Enable Timer 2
+
+    // 6. Input Capture Setup (Unchanged)
+    IC1CON = 0;              // Reset IC1
+    IC1CONbits.ICTMR = 1;    // Select Timer 2 as the time base
+    IC1CONbits.ICM = 0b011;  // Capture on every rising edge
+}
+
 
 void setup(void) {
     CLKDIVbits.RCDIV = 0; //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
@@ -156,10 +212,12 @@ void setup(void) {
     LATBbits.LATB10 = 0; // SDA1 is input
     LATBbits.LATB11 = 0; // SCL1 is input
     LATBbits.LATB12 = 0; // SDA1 is input
-    LATBbits.LATB13 = 0; // SCL1 is input 
+    LATBbits.LATB13 = 0; // SCL1 is input
+//    
 
     // Wait for the I2C module to stabilize
     delay(20);
+//    lcd_init();
 }
 
 void delay(long n) {
@@ -167,6 +225,21 @@ void delay(long n) {
         asm("nop");
     }
 }
+
+void __attribute__((interrupt, auto_psv)) _T2Interrupt(){
+    IFS0bits.T2IF = 0;
+}
+
+void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt(void)
+{
+   _IC1IF = 0;
+   checkButton();
+   if (gameStart == 0) {
+       gameCont = 1;
+   }
+   
+}
+
 
 void setcolor(int  r, int  g, int  b){
     LATBbits.LATB6 = 0;
@@ -182,6 +255,8 @@ void setcolor(int  r, int  g, int  b){
         LATBbits.LATB8 = 1;
     }
 }
+
+#include <xc.h> // Standard PIC include
 
 // Assumes 'data' is an array where:
 // Bit 0 = Red
@@ -256,7 +331,7 @@ void reset(){
 }
 
 void updateMatrix(int startrow, int FOV) {
-    for (int i = startrow; i < startrow + FOV; i++){
+    for (int i = startrow; i< startrow + FOV; i++){
         
         blast_row_pic24(matrix[i],31);
         
@@ -281,21 +356,39 @@ void updateMatrix(int startrow, int FOV) {
     }
 }
 
+
+
+//void changeRow(int *pixels)
+
 void checkButton() {
     int currentButtonState = BUTTON;
     
     // Button pressed (active low) with debounce counter
-    if (currentButtonState == 0 && lastButtonState == 1 && buttonDebounce == 0) {
+    
+    
+    unsigned int icVal = IC1BUF;   // Read captured timer value
+    unsigned int captureTime = icVal;           // Could be stored for analysis
+
+    // Compute time since last valid event
+    unsigned long now = TMR2;
+    unsigned long delta;
+
+    if (now >= lastCaptureTime)
+    {
+        delta = now - lastCaptureTime;
+    }
+    else
+    {
+        delta = (0xFFFF - lastCaptureTime) + now;
+    }
+    
+    if (delta > debouncePeriod/4)
+    {
+        // This is a valid press (not bounce)
+        lastCaptureTime = now;
         direction = (direction + 1) % 4; // Rotate clockwise: right->down->left->up
-        buttonDebounce = 1000; // Set debounce counter
+        lastButtonState = 0;
     }
-    
-    // Decrement debounce counter
-    if (buttonDebounce > 0) {
-        buttonDebounce--;
-    }
-    
-    lastButtonState = currentButtonState;
 }
 
 int checkWall(int x, int y) {
@@ -305,7 +398,7 @@ int checkWall(int x, int y) {
 }
 
 void drawPacman() {
-    // Draw pacman as yellow pixel at current position
+        // Draw pacman as yellow pixel at current position
     if (pacman_y >= 0 && pacman_y < 16 && pacman_x >= 0 && pacman_x < 32) {
         if (direction == 0) { // moving right makes player purple
             matrix[pacman_y][pacman_x] = purple;
@@ -331,14 +424,20 @@ void drawEnemy() {
 void clearPacman() {
     // Clear pacman's old position
     if (pacman_y >= 0 && pacman_y < 16 && pacman_x >= 0 && pacman_x < 32) {
-        if (matrix[pacman_y][pacman_x] == cyan) {
+        if (matrix[pacman_y][pacman_x] == purple) {
+            matrix[pacman_y][pacman_x] = black;
+        } else if (matrix[pacman_y][pacman_x] == cyan) {
+            matrix[pacman_y][pacman_x] = black;
+        } else if (matrix[pacman_y][pacman_x] == white) {
+            matrix[pacman_y][pacman_x] = black;
+        } else if (matrix[pacman_y][pacman_x] == blue) {
             matrix[pacman_y][pacman_x] = black;
         }
     }
 }
 
 void clearEnemy() {
-    // Clear pacman's old position
+        // Clear pacman's old position
     if (enemy_y >= 0 && enemy_y < 16 && enemy_x >= 0 && enemy_x < 32) {
         if (matrix[enemy_y][enemy_x] == red) {
             matrix[enemy_y][enemy_x] = black;
@@ -425,93 +524,23 @@ void moveEnemy() {
 }
 
 int gameLosscheck(){
-    int temp = enemy_y;
     if(pacman_x == enemy_x && enemy_y== pacman_y){
         return 0;
     } else {
        return 1; 
     }
+    
 }
 
-void setWinScreen(void) {
-    int endRow5[32] = {black,
-            white,black,black,black,white, // letter Y
-            black,
-            white,white,white,white, // letter O
-            black,
-            white,black,black,white, // letter U
-            black,
-            white,black,black,black,black,white, // letter W
-            black,
-            white, // letter I
-            black,
-            white,black,black,black,white, // letter N
-            black};
- 
-    int endRow6[32] = {black,
-            black,white,black,white,black, // letter Y
-            black,
-            white,black,black,white, // letter O
-            black,
-            white,black,black,white, // letter U
-            black,
-            white,black,black,black,black,white, // letter W
-            black,
-            white, // letter I
-            black,
-            white,white,black,black,white, // letter N
-            black};
- 
-    int endRow7[32] = {black,
-            black,black,white,black,black, // letter Y
-            black,
-            white,black,black,white, // letter O
-            black,
-            white,black,black,white, // letter U
-            black,
-            white,black,white,white,black,white, // letter W
-            black,
-            white, // letter I
-            black,
-            white,white,white,black,white, // letter N
-            black};
- 
-    int endRow8[32] = {black,
-            black,black,white,black,black, // letter Y
-            black,
-            white,black,black,white, // letter O
-            black,
-            white,black,black,white, // letter U
-            black,
-            black,white,black,black,white,black, // letter W
-            black,
-            white, // letter I
-            black,
-            white,black,white,white,white, // letter N
-            black};
- 
-    int endRow9[32] = {black,
-            black,black,white,black,black, // letter Y
-            black,
-            white,white,white,white, // letter O
-            black,
-            white,white,white,white, // letter U
-            black,
-            black,white,black,black,white,black, // letter W
-            black,
-            white, // letter I
-            black,
-            white,black,black,white,white, // letter N
-            black};
-    
-    for(int i = 0; i < 32; i++) {
-        matrix[5][i] = endRow5[i];
-        matrix[6][i] = endRow6[i];
-        matrix[7][i] = endRow7[i];
-        matrix[8][i] = endRow8[i];
-        matrix[9][i] = endRow9[i];
+int gameWincheck(){
+    if(pacman_x == 15 && pacman_y== 7){
+        return 1;
+    } else {
+       return 0; 
     }
+    
 }
+
 
 void setLoseScreen(void) {
     int loseRow5[32] = {black,
@@ -608,7 +637,7 @@ void setLoseScreen(void) {
     }
 }
 
-void setStartScreen(void) {
+void setStartScreen() {
     int startRow2[32] = {black,
             white,white,white,white,white, // letter S
             black,
@@ -744,18 +773,137 @@ void setStartScreen(void) {
     }
 }
 
+void setWinScreen(void) {
+    int endRow5[32] = {black,
+            white,black,black,black,white, // letter Y
+            black,
+            white,white,white,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            white,black,black,black,black,white, // letter W
+            black,
+            white, // letter I
+            black,
+            white,black,black,black,white, // letter N
+            black};
+ 
+    int endRow6[32] = {black,
+            black,white,black,white,black, // letter Y
+            black,
+            white,black,black,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            white,black,black,black,black,white, // letter W
+            black,
+            white, // letter I
+            black,
+            white,white,black,black,white, // letter N
+            black};
+ 
+    int endRow7[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,black,black,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            white,black,white,white,black,white, // letter W
+            black,
+            white, // letter I
+            black,
+            white,white,white,black,white, // letter N
+            black};
+ 
+    int endRow8[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,black,black,white, // letter O
+            black,
+            white,black,black,white, // letter U
+            black,
+            black,white,black,black,white,black, // letter W
+            black,
+            white, // letter I
+            black,
+            white,black,white,white,white, // letter N
+            black};
+ 
+    int endRow9[32] = {black,
+            black,black,white,black,black, // letter Y
+            black,
+            white,white,white,white, // letter O
+            black,
+            white,white,white,white, // letter U
+            black,
+            black,white,black,black,white,black, // letter W
+            black,
+            white, // letter I
+            black,
+            white,black,black,white,white, // letter N
+            black};
+    
+    for (int i = 0; i < 32; i++) {
+        /*
+        matrix[2][i] = startRow2[i];
+        matrix[3][i] = startRow3[i];
+        matrix[4][i] = startRow4[i];
+        matrix[5][i] = startRow5[i];
+        matrix[6][i] = startRow6[i];
+        matrix[7][i] = black;
+        matrix[8][i] = startRow8[i];
+        matrix[9][i] = startRow9[i];
+        matrix[10][i] = startRow10[i];
+        matrix[11][i] = startRow11[i];
+        matrix[12][i] = startRow12[i];
+         */
+        
+        matrix[5][i] = endRow5[i];
+        matrix[6][i] = endRow6[i];
+        matrix[7][i] = endRow7[i];
+        matrix[8][i] = endRow8[i];
+        matrix[9][i] = endRow9[i];
+    }
+}
+
 void resetGameMaze(void) {
+    int trow5[32] = {yellow,black,black,black,yellow,black,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,yellow,black,yellow,
+                black,black,black,yellow,black,yellow,yellow,black,
+                yellow,yellow,yellow,yellow,yellow,black,black,yellow};
+
+    int trow6[32] = {yellow,black,yellow,yellow,yellow,black,black,black,
+                black,black,black,black,black,black,black,yellow,
+                yellow,yellow,black,yellow,black,black,black,black,
+                black,black,black,black,black,black,yellow,yellow};
+
+    int trow7[32] = {black,black,black,black,black,black,yellow,yellow,
+                yellow,yellow,yellow,yellow,yellow,yellow,yellow,green,
+                black,black,black,black,black,yellow,yellow,black,
+                yellow,yellow,black,black,yellow,yellow,black,black};
+
+    int trow8[32] = {black,black,yellow,yellow,yellow,black,black,black,
+                black,black,black,yellow,black,black,black,yellow,
+                yellow,black,yellow,yellow,yellow,black,black,black,
+                yellow,black,black,yellow,black,black,black,yellow};
+
+    int trow9[32] = {yellow,black,yellow,black,black,black,yellow,yellow,
+                black,yellow,yellow,yellow,black,yellow,black,black,
+                black,black,yellow,black,black,black,yellow,black,
+                black,yellow,black,black,black,yellow,black,yellow};
     for(int i = 0; i < 32; i++) {
-        matrix[5][i] = row5[i];
-        matrix[6][i] = row6[i];
-        matrix[7][i] = row7[i];
-        matrix[8][i] = row8[i];
-        matrix[9][i] = row9[i];
+        matrix[5][i] = trow5[i];
+        matrix[6][i] = trow6[i];
+        matrix[7][i] = trow7[i];
+        matrix[8][i] = trow8[i];
+        matrix[9][i] = trow9[i];
     }
 }
 
 int main(void) {
     setup();
+    initPushButton();
     reset();
 //    blast_row_pic24(row1,32);
     reset();
@@ -763,27 +911,31 @@ int main(void) {
     drawPacman();
     drawEnemy();
     
-    int gameCont = 1; // Check if game continues
-    int playerWin = 1; // Check if player wins
+
+    _IC1IE = 1;
     while(1){
         setStartScreen(); // Prepares the start screen
         lastButtonState = 1;
         while (lastButtonState) { // If they press the button, start the game
-            checkButton();
             updateMatrix(5, 5); // Display the start screen
         }
-        
         resetGameMaze(); // Resets the part of the maze used for a screen
         gameCont = 1; // Allows for the game to be replayed after a win/loss
+        pacman_x = 0;
+        pacman_y = 0;
+        enemy_x = 31;
+        enemy_y = 15;
         while (gameCont){
-            checkButton(); // see if the player pressed the button to rotate
         
             // Move pacman every N iterations
             moveCounter++;
             if (moveCounter >= 10) {
                 if(gameLosscheck() == 0){
                     gameCont = 0;
-                    playerWin = 0;
+                    winLoss = 0;
+                } else if(gameWincheck() == 1){
+                    gameCont = 0;
+                    winLoss = 1;
                 }
                 clearPacman();
                 movePacman();
@@ -805,7 +957,7 @@ int main(void) {
         }
         
         // Determines which end screen to display
-        if (playerWin) {
+        if (winLoss) {
             setWinScreen();
         } else {
             setLoseScreen();
@@ -814,7 +966,6 @@ int main(void) {
         // Displays the end screen until they press the button
         lastButtonState = 1;
         while (lastButtonState) {
-            checkButton();
             updateMatrix(5, 5); // Displays the end screen
         }
         
@@ -824,12 +975,11 @@ int main(void) {
 //        reset();
 //        LATBbits.LATB4 = 1;
 //        delay(1000);
+//        setcolor(1,1,0);
 //        LATBbits.LATB9 = 1;
 //        LATBbits.LATB10 = 0;
 //        LATBbits.LATB11 = 0; 
 //        LATBbits.LATB12 = 0; 
-////        blast_row_pic24(arr,16);
-////        setcolor(1,1,0);
 //        LATBbits.LATB4 = 0;
 //        delay(5000);
 //        reset();
@@ -840,7 +990,7 @@ int main(void) {
 //        LATBbits.LATB11 = 0; 
 //        LATBbits.LATB12 = 0; 
 ////        blast_row_pic24(arr,16);
-////        setcolor(1,1,0);
+////        
 //        LATBbits.LATB4 = 0;
 //        delay(5000);
 //        reset();
@@ -906,5 +1056,5 @@ int main(void) {
 //        delay(5000);
 //        reset();
     }
-    return 0;
+//    return 0;
 }
